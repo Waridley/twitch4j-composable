@@ -1,6 +1,7 @@
 [submodule "twitch4j"]
 	path = twitch4j
 	url = https://github.com/twitch4j/twitch4j.git
+	branch = develop
 [submodule "credential-manager"]
 	path = credential-manager
 	url = https://github.com/PhilippHeuer/credential-manager.git
