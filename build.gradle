@@ -1,0 +1,78 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+plugins {
+    id 'java'
+}
+
+group 'com.waridley.'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    
+    //Twitch4j dependencies because Spring dependency-management plugin does not work with composite builds
+    implementation group: "com.apollographql.apollo", name: "apollo-runtime", version: "1.2.2"
+    implementation group: "com.apollographql.apollo", name: "apollo-gradle-plugin", version: "1.2.2"
+    implementation group: "com.github.philippheuer.events4j", name: "events4j-core"
+    implementation group: "com.github.philippheuer.events4j", name: "events4j-handler-simple"
+    implementation group: "org.slf4j", name: "slf4j-api", version: "1.7.30"
+    implementation group: "ch.qos.logback", name: "logback-classic", version: "1.2.3"
+    implementation group: "org.apache.commons", name: "commons-lang3", version: "3.9"
+    implementation group: "commons-io", name: "commons-io", version: "2.6"
+    implementation group: "org.apache.commons", name: "commons-collections4", version: "4.4"
+    implementation group: "commons-configuration", name: "commons-configuration", version: "1.10"
+    implementation group: "com.github.philippheuer.events4j", name: "events4j-core", version: "0.7.1"
+    implementation group: "com.github.philippheuer.events4j", name: "events4j-handler-simple", version: "0.7.1"
+    implementation group: "com.github.philippheuer.credentialmanager", name: "credentialmanager", version: "0.1.0"
+    implementation group: "com.squareup.okhttp3", name: "okhttp", version: "4.3.1"
+    implementation group: "com.github.vladimir-bukhtoyarov", name: "bucket4j-core", version: "4.7.0"
+    implementation group: "io.github.openfeign", name: "feign-okhttp", version: "10.7.4"
+    implementation group: "io.github.openfeign", name: "feign-jackson", version: "10.7.4"
+    implementation group: "io.github.openfeign", name: "feign-slf4j", version: "10.7.4"
+    implementation group: "io.github.openfeign", name: "feign-hystrix", version: "10.7.4"
+    implementation group: "com.netflix.hystrix", name: "hystrix-core", version: "1.5.18"
+    implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.10.2"
+    implementation group: "com.fasterxml.jackson.module", name: "jackson-module-parameter-names", version: "2.10.2"
+    implementation group: "com.fasterxml.jackson.datatype", name: "jackson-datatype-jdk8", version: "2.10.2"
+    implementation group: "com.fasterxml.jackson.datatype", name: "jackson-datatype-jsr310", version: "2.10.2"
+    implementation group: "com.neovisionaries", name: "nv-websocket-client", version: "2.9"
+    implementation group: "org.jetbrains", name: "annotations", version: "18.0.0"
+    implementation group: "org.junit.jupiter", name: "junit-jupiter-api", version: "5.6.0"
+    implementation group: "org.junit.jupiter", name: "junit-jupiter-engine", version: "5.6.0"
+    implementation group: "org.projectlombok", name: "lombok", version: "1.18.10"
+}
+
+tasks {
+    init {
+        dependsOn "setEnv"
+    }
+}
+
+task publishDependencies(type: Exec) {
+    environment("CI_COMMIT_REF_NAME", "${version}.local")
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        executable "cmd.exe"
+        args "/C", "cd credential-manager && gradlew.bat publishToMavenLocal && cd ../twitch4j && gradlew.bat publishToMavenLocal"
+    } else if (Os.isFamily(Os.FAMILY_UNIX)) {
+        executable("bash")
+        args "-c", "cd credential-manager && ./gradlew publishToMavenLocal && cd ../twitch4j && ./gradlew publishToMavenLocal"
+    }
+}
+
+task setEnv(type: Exec) {
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        executable("cmd.exe")
+        args "/C", "set CI_COMMIT_REF_NAME=${version}.local"
+    } else  {
+        executable("sh")
+        args "-c", "export CI_COMMIT_REF_NAME=${version}.local"
+    }
+}
