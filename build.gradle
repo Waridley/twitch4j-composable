@@ -18,6 +18,8 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     
+    implementation group: "com.github.twitch4j", name: "twitch4j", version: "${version}.local"
+    
     //Twitch4j dependencies because Spring dependency-management plugin does not work with composite builds
     implementation group: "com.apollographql.apollo", name: "apollo-runtime", version: "1.2.2"
     implementation group: "com.apollographql.apollo", name: "apollo-gradle-plugin", version: "1.2.2"
