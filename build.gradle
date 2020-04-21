@@ -58,14 +58,40 @@ tasks {
     }
 }
 
-task publishDependencies(type: Exec) {
-    environment("CI_COMMIT_REF_NAME", "${version}.local")
+task publishDependencies {
+    dependsOn "setEnv"
+    dependsOn "publishCredMgr"
+    dependsOn "publishEvents4j"
+    dependsOn "publishTwitch4j"
+}
+
+task publishCredMgr(type: Exec) {
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
         executable "cmd.exe"
-        args "/C", "cd credential-manager && gradlew.bat publishToMavenLocal && cd ../twitch4j && gradlew.bat publishToMavenLocal"
+        args "/C", "cd credential-manager && gradlew.bat publishToMavenLocal "
     } else if (Os.isFamily(Os.FAMILY_UNIX)) {
         executable("bash")
-        args "-c", "cd credential-manager && ./gradlew publishToMavenLocal && cd ../twitch4j && ./gradlew publishToMavenLocal"
+        args "-c", "cd credential-manager && ./gradlew publishToMavenLocal"
+    }
+}
+
+task publishEvents4j(type: Exec) {
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        executable "cmd.exe"
+        args "/C", "cd events4j && gradlew.bat publishToMavenLocal"
+    } else if (Os.isFamily(Os.FAMILY_UNIX)) {
+        executable("bash")
+        args "-c", "cd events4j && ./gradlew publishToMavenLocal"
+    }
+}
+
+task publishTwitch4j(type: Exec) {
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        executable "cmd.exe"
+        args "/C", "cd twitch4j && gradlew.bat publishToMavenLocal"
+    } else if (Os.isFamily(Os.FAMILY_UNIX)) {
+        executable("bash")
+        args "-c", "cd twitch4j && ./gradlew publishToMavenLocal"
     }
 }
 
@@ -74,7 +100,7 @@ task setEnv(type: Exec) {
         executable("cmd.exe")
         args "/C", "set CI_COMMIT_REF_NAME=${version}.local"
     } else  {
-        executable("sh")
+        executable("bash")
         args "-c", "export CI_COMMIT_REF_NAME=${version}.local"
     }
 }
