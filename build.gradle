@@ -66,41 +66,46 @@ task publishDependencies {
 }
 
 task publishCredMgr(type: Exec) {
+    workingDir "credential-manager"
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
         executable "cmd.exe"
-        args "/C", "cd credential-manager && gradlew.bat publishToMavenLocal "
+        args "/C", "gradlew.bat publishToMavenLocal "
     } else if (Os.isFamily(Os.FAMILY_UNIX)) {
-        executable("bash")
-        args "-c", "cd credential-manager && ./gradlew publishToMavenLocal"
+        executable "bash"
+        args "-c", "./gradlew publishToMavenLocal"
     }
 }
 
 task publishEvents4j(type: Exec) {
+    workingDir "events4j"
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
         executable "cmd.exe"
-        args "/C", "cd events4j && gradlew.bat publishToMavenLocal"
+        args "/C", "gradlew.bat publishToMavenLocal"
     } else if (Os.isFamily(Os.FAMILY_UNIX)) {
-        executable("bash")
-        args "-c", "cd events4j && ./gradlew publishToMavenLocal"
+        executable "bash"
+        args "-c", "./gradlew publishToMavenLocal"
     }
 }
 
 task publishTwitch4j(type: Exec) {
+    workingDir "twitch4j"
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
         executable "cmd.exe"
-        args "/C", "cd twitch4j && gradlew.bat publishToMavenLocal"
+        args "/C", "gradlew.bat publishToMavenLocal"
     } else if (Os.isFamily(Os.FAMILY_UNIX)) {
-        executable("bash")
-        args "-c", "cd twitch4j && ./gradlew publishToMavenLocal"
+        executable "bash"
+        args "-c", "./gradlew publishToMavenLocal"
     }
 }
 
 task setEnv(type: Exec) {
     if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-        executable("cmd.exe")
+        executable "cmd.exe"
         args "/C", "set CI_COMMIT_REF_NAME=${version}.local"
-    } else  {
-        executable("bash")
+    } else if (Os.isFamily(Os.FAMILY_UNIX)) {
+        executable "bash"
         args "-c", "export CI_COMMIT_REF_NAME=${version}.local"
+    } else {
+        System.err.println "Sorry! I don't know your platform. Add a case for it in each task."
     }
 }
