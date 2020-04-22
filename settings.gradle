@@ -22,6 +22,10 @@ includeBuild("credential-manager") {
 
 includeBuild("events4j") {
 	dependencySubstitution {
-		substitute module("com.github.philippheuer.events4j:events4j") with project(":")
+		substitute module("com.github.philippheuer.events4j:events4j-api") with project(":events4j-api")
+		substitute module("com.github.philippheuer.events4j:events4j-core") with project(":events4j-core")
+		substitute module("com.github.philippheuer.events4j:events4j-handler-simple") with project(":events4j-handler-simple")
+		substitute module("com.github.philippheuer.events4j:events4j-handler-reactor") with project(":events4j-handler-reactor")
+		substitute module("com.github.philippheuer.events4j:events4j-handler-spring") with project(":events4j-handler-spring")
 	}
 }
