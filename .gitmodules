@@ -4,8 +4,7 @@
 	branch = develop
 [submodule "credential-manager"]
 	path = credential-manager
-	url = https://github.com/Waridley/credential-manager.git
-	branch = composable
+	url = https://github.com/PhilippHeuer/credential-manager.git
 [submodule "events4j"]
 	path = events4j
 	url = https://github.com/PhilippHeuer/events4j.git
